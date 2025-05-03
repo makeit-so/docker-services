@@ -1,0 +1,25 @@
+version: "3.7"
+
+services:
+  wikijs:
+    image: ghcr.io/requarks/wiki:latest
+    container_name: wikijs
+    restart: unless-stopped
+    environment:
+      - DB_TYPE=sqlite
+      - DB_FILEPATH=/wiki-data/wiki.db
+      - TZ=America/New_York
+    volumes:
+      - /opt/docker-services/wiki/data:/wiki-data
+    networks:
+      - proxy_network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wikijs.rule=Host(`wiki.shashy.org`)"
+      - "traefik.http.routers.wikijs.entrypoints=websecure"
+      - "traefik.http.routers.wikijs.tls=true"
+
+networks:
+  proxy_network:
+    external: true
+
